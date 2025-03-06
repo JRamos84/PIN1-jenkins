@@ -13,13 +13,13 @@ pipeline {
   stages {
     stage('Building image') {
       steps {
-        sh "docker build -t ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ."
+        sh "sudo docker build -t ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ."
       }
     }
 
     stage('Run tests') {
       steps {
-        sh "docker run --rm ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} npm test"
+        sh "sudo docker run --rm ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} npm test"
       }
     }
 
@@ -30,11 +30,11 @@ pipeline {
             sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
             
             // Etiquetar la imagen antes de subirla
-            sh "docker tag ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest"
+            sh "sudo docker tag ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest"
             
             // Subir la imagen a Docker Hub
-            sh "docker push ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
-            sh "docker push ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest"
+            sh "sudo docker push ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
+            sh "sudo docker push ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest"
           }
         }
       }
