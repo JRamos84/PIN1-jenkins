@@ -24,15 +24,19 @@ pipeline {
       }
     }
    stage('Deploy Image') {
-      steps{
-        sh '''
-        docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
-        docker push 127.0.0.1:5000/mguazzardo/testapp   
-        '''
+     steps {
+    script {
+        withCredentials([usernamePassword(credentialsId: 'docker-hub-mundose', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+            sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
+            sh "docker push ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+            sh "docker tag ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-${env.BUILD_NUMBER} ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest"
+            sh "docker push ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest"
         }
+    }
       }
     }
 }
+
 
 
     
