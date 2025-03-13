@@ -26,7 +26,7 @@ pipeline {
     stage('Deploy Image') {
       steps {
         script {
-          withDockerRegistry([credentialsId: '2mundose-hub', url: '']) {
+          withDockerRegistry([credentialsId: 'mundose-hub', url: '']) {
             sh """
               docker tag ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest
               docker push ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}
