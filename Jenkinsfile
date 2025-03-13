@@ -11,6 +11,18 @@ pipeline {
   }
 
   stages {
+    stage('Login to Docker Hub') {
+      steps {
+        script {
+          withCredentials([usernamePassword(credentialsId: '2mundose-hub', 
+                                           passwordVariable: 'DOCKER_HUB_PASSWORD', 
+                                           usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+            sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
+          }
+        }
+      }
+    }
+
     stage('Building image') {
       steps {
         sh "docker build -t ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ."
@@ -26,13 +38,11 @@ pipeline {
     stage('Deploy Image') {
       steps {
         script {
-          withDockerRegistry([credentialsId: 'mundose-hub', url: '']) {
-            sh """
-              docker tag ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest
-              docker push ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}
-              docker push ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest
-            """
-          }
+          sh """
+            docker tag ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest
+            docker push ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}
+            docker push ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest
+          """
         }
       }
     }
