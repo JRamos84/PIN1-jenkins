@@ -6,7 +6,7 @@ pipeline {
   }
 
   environment {
-    DOCKER_IMAGE_NAME = "elbuo8/webapp"
+    DOCKER_IMAGE_NAME = "joseph0001519/webapp"
     IMAGE_TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}".replaceAll('/', '-') // Evita caracteres inválidos en Docker
   }
 
