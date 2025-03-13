@@ -41,8 +41,9 @@ pipeline {
             withCredentials([usernamePassword(credentialsId: 'mundose-hub', 
                                            passwordVariable: 'DOCKER_HUB_PASSWORD', 
                                            usernameVariable: 'DOCKER_HUB_USERNAME')]) {
-            sh "echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
+          
             sh """
+              echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin
               docker tag ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest
               docker push ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}
               docker push ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest
